@@ -1,0 +1,15 @@
+# Ignore .env file
+.env
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore virtual environment
+venv/
+
+# Ignore all .json files
+*.json
+
+# Ignore testes
+teste.py
