@@ -708,6 +708,76 @@ def criar_barra_resp_prc_destaq(df, year, filename_base, title_base):
 
     return [f'outputs/{year}/entregues/{filename_base}_grafico_{i+1}.png' for i in range(len(subset_list))], saida_lista
     
+#### GRÁFICO FINANCEIRO DE BARRAS DE PROJETOS ENTREGUES POR ELOS ####
+def criar_barra_resp_prc_fin(df, year, filename, title):
+
+    # Substituir os valores que não estão na lista por 'OUTROS'
+    lista_inclusao = ['CEPE','SR-BE', 'SR-BR','SR-CO','SR-MN','SR-NT','SR-RJ','SR-SJ','GAC-AN','COMARA','GECAMP']
+    df['RESP_PRJ_Abr'] = df['RESP_PRJ_Abr'].where(df['RESP_PRJ_Abr'].isin(lista_inclusao), 'OUTROS')
+    
+    # Agrupar os dados pela coluna 'RESP_PROJ_Abr' e somar a coluna 'VALOR'
+    amounts = df[['VALOR','RESP_PRJ_Abr']].groupby('RESP_PRJ_Abr').sum()
+        
+    # Reordenar o DataFrame agrupado com base no valor dos projetos, em ordem decrescente
+    amounts = amounts.loc[amounts.sort_values(by='VALOR',ascending=False).index]
+
+    # Garantir que 'OUTROS' esteja na última posição
+    if 'OUTROS' in amounts.index:
+        outros = amounts.loc[['OUTROS']]
+        amounts = amounts.drop('OUTROS')
+        amounts = pd.concat([amounts, outros])
+
+    # Configurar a fonte para Arial
+    plt.rcParams['font.family'] = 'Arial'
+
+    # Criar o gráfico de barras
+    plt.figure(figsize=(10, 6))
+
+    # Definir cores para as barras
+    #colors = ['gray' if status not in ['PRC', 'OBI', 'OBC', 'LIA', 'OSP', 'OCN'] else '#224b89' for status in status_counts.index]
+    colors = '#224b89'
+
+    # Adicionar as barras sem criar uma legenda automática
+    bars = plt.bar(amounts.index, amounts['VALOR'], color=colors)
+
+    # Remover os eixos e bordas
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['left'].set_visible(False)
+    plt.gca().spines['bottom'].set_visible(False)
+
+    # Remover as linhas que unem os rótulos do eixo x às barras
+    plt.gca().xaxis.tick_bottom()
+    plt.gca().tick_params(axis='x', length=0)
+
+    # Definir os rótulos do eixo x na horizontal
+    plt.xticks(rotation=0, fontsize=12, fontweight='bold')
+
+    # Remover rótulos do eixo y
+    plt.yticks([])
+
+    # Adicionar rótulos de valores acima das barras
+    for bar in bars:
+        valor_milhoes = bar.get_height()/1000000
+        plt.annotate(f'R$ {valor_milhoes:.1f}Mi', 
+                    (bar.get_x() + bar.get_width() / 2, bar.get_height()), 
+                    ha='center', va='bottom', fontsize=12, fontweight='bold')
+
+    # Adicionar uma linha fina preta como eixo x
+    plt.axhline(y=0, color='black', linewidth=2)
+
+    plt.title(title, fontsize=18, fontweight='bold')
+
+    plt.tight_layout()
+
+    img_output = f'outputs/{year}/entregues/{filename}.png'
+
+    # Salvar o gráfico como imagem
+    plt.savefig(img_output, dpi=300, bbox_inches='tight')  # Salva como PNG
+    
+    #plt.show()
+    return img_output
+
 #### GRÁFICO DE BARRAS DE PROJETOS PRI E AGD POR ELOS ####
 def criar_barra_resp_prj(df, filename, title):
     # Substituir os valores que não estão na lista por 'OUTROS'

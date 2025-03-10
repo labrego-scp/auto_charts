@@ -83,7 +83,6 @@ df['Data de entrega do Projeto'] = pd.to_datetime(df['Data de entrega do Projeto
 df['PRAZO PROJETO VIGENTE + PTA'] = df.apply(define_prazo_vigente, axis=1)
 df['PRAZO PROJETO VIGENTE + PTA'] = pd.to_datetime(df['PRAZO PROJETO VIGENTE + PTA'])
 df['PRAZO PROJETO VIGENTE + PTA'] = df['PRAZO PROJETO VIGENTE + PTA'].dt.date
-#df.to_excel('teste.xlsx', index=False)
 df['COD_PRAZO_PRJ'] = df.apply(cod_proj, axis=1)
 df['STATUS_PRAZO_PRJ'] = df['COD_PRAZO_PRJ'].apply(definir_status_prazo)
 df['COD_PRAZO_PRJ'].value_counts() 
@@ -158,6 +157,11 @@ img_prc_2025 = criar_barra_resp_prc(df_2025_prc,'2025', 'resp_25_26_prc', 'Quant
 img_prc_2023_destaq, img_prc_2023_destaq_lista = criar_barra_resp_prc_destaq(df_2023_prc,'2023', 'resp_23_24_prc', 'Quantidade de projetos concluídos (PRC, LIA, OBI, OBC)')
 img_prc_2024_destaq, img_prc_2024_destaq_lista = criar_barra_resp_prc_destaq(df_2024_prc,'2024', 'resp_24_25_prc', 'Quantidade de projetos concluídos (PRC, LIA, OBI, OBC)')
 img_prc_2025_destaq, img_prc_2025_destaq_lista = criar_barra_resp_prc_destaq(df_2025_prc,'2025', 'resp_25_26_prc', 'Quantidade de projetos concluídos (PRC, LIA, OBI, OBC)')
+
+######### GERAÇÃO DO GRÁFICO FINANCEIRO DE BARRAS DOS PROJETOS ENTREGUES POR ELOS #########
+img_prc_2023_fin = criar_barra_resp_prc_fin(df_2023_prc,'2023', 'resp_23_24_prc_fin', 'Volume financeiro de de projetos concluídos (PRC, LIA, OBI, OBC)')
+img_prc_2024_fin = criar_barra_resp_prc_fin(df_2024_prc,'2024', 'resp_24_25_prc_fin', 'Volume financeiro de de projetos concluídos (PRC, LIA, OBI, OBC)')
+img_prc_2025_fin = criar_barra_resp_prc_fin(df_2025_prc,'2025', 'resp_25_26_prc_fin', 'Volume financeiro de de projetos concluídos (PRC, LIA, OBI, OBC)')
 
 ######### GERAÇÃO DO GRÁFICO DE BARRAS DOS PROJETOS PRI E AGD POR ELOS #########
 df_prj = df[df['STATUS'].isin(['PRI', 'AGD'])]  
